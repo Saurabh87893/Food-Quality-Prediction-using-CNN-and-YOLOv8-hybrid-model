@@ -1,0 +1,68 @@
+YOLOv8
+-----------------------------------------------------------------------------------------------------------------------------------
+!nvidia-smi
+------------------------------------------------------------------------------------------------------------------------------------
+import tensorflow as tf
+from tensorflow.keras import models, layers
+import matplotlib.pyplot as plt
+from IPython.display import HTML
+import tensorflow.keras.regularizers as regularizers
+l2_regularizer = regularizers.l2(0.001)
+import tensorflow as tf
+from tensorflow.keras.regularizers import l2
+# regularizer = l2(0.001)
+-------------------------------------------------------------------------------------------------------------------------------------
+import os
+HOME = os.getcwd()
+print(HOME)
+-------------------------------------------------------------------------------------------------------------------------------------
+# download yolo from yolo
+!pip install ultralytics
+
+from IPython import display
+display.clear_output()
+!yolo mode= checks
+-------------------------------------------------------------------------------------------------------------------------------------
+!pip install bbox
+-------------------------------------------------------------------------------------------------------------------------------------
+%matplotlib inline
+from PIL import Image
+
+import matplotlib.pyplot as plt
+import numpy as np
+-------------------------------------------------------------------------------------------------------------------------------------
+# download dataset for yolo
+!pip install roboflow
+
+from roboflow import Roboflow
+rf = Roboflow(api_key="LAVlZ4gjwlnGTdQ6HRBA")
+project = rf.workspace("lakshantha-dissanayake").project("apple-detection-5z37o")
+version = project.version(1)
+dataset = version.download("yolov8")
+-------------------------------------------------------------------------------------------------------------------------------------
+# work training
+
+import os
+from ultralytics import YOLO
+
+# Load a model
+model = YOLO('yolov8n.yaml')  # build a new model from YAML
+model = YOLO('/content/Apple-Detection-1/train')  # load a pretrained model (recommended for training)
+model = YOLO('yolov8n.yaml').load('yolov8n.pt')  # build from YAML and transfer weights
+
+# Train the model
+results = model.train(data='/content/Apple-Detection-1/data.yaml', epochs=50, imgsz=640)
+--------------------------------------------------------------------------------------------------------------------------------------
+from google.colab import drive
+drive.mount('/content/drive')
+--------------------------------------------------------------------------------------------------------------------------------------
+model.save('/content/drive/MyDrive/Model/YOLO_model2.h5')  # Change path as necessary
+--------------------------------------------------------------------------------------------------------------------------------------
+# This code will display the confusion matrix image that is saved in the /content/runs/detect/train/ directory.
+from IPython.display import Image
+Image(filename = f'/content/runs/detect/train2/confusion_matrix.png',width=600)
+--------------------------------------------------------------------------------------------------------------------------------------
+Image(filename = f'/content/runs/detect/train2/results.png',width=600)
+--------------------------------------------------------------------------------------------------------------------------------------
+Image(filename = f'/content/runs/detect/train2/val_batch0_pred.jpg',width=600)
+--------------------------------------------------------------------------------------------------------------------------------------
