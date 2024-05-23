@@ -1,0 +1,90 @@
+TESTING
+------------------------------------------------------------------------------------------------------------
+import os.path
+from os import path
+
+if path.exists('/content/apple_yolo_cut_picture') == False:
+  os.mkdir('/content/apple_yolo_cut_picture')
+
+os.chdir('/content/apple_yolo_cut_picture')
+------------------------------------------------------------------------------------------------------------
+from ultralytics import YOLO
+
+import cv2
+
+# Load the YOLOv8 model
+model = YOLO('/content/yolov8n.pt')
+
+# Perform inference on an image
+results = model('/content/drive/MyDrive/Image/Image1.jpg')
+
+# Load the original image
+image = "/content/drive/MyDrive/Image/Image1.jpg"
+img = cv2.imread(image)
+
+# Extract bounding boxes
+boxes = results[0].boxes.xyxy.tolist()
+
+new_path='/content/apple_yolo_cut_picture'
+
+# Iterate through the bounding boxes
+for i, box in enumerate(boxes):
+    x1, y1, x2, y2 = box
+    # Crop the object using the bounding box coordinates
+    ultralytics_crop_object = img[int(y1):int(y2), int(x1):int(x2)]
+    # Save the cropped object as an image
+    cv2.imwrite('/content/apple_yolo_cut_picture/ultralytics_crop_' + str(i) + '.jpg', ultralytics_crop_object)
+------------------------------------------------------------------------------------------------------------------
+import tensorflow as tf
+import cv2
+import numpy as np
+
+# importing required libraries
+import matplotlib.pyplot as plt
+import matplotlib.image as img
+
+image_path2='/content/drive/MyDrive/Image/Image1.jpg'
+print("Input image:")
+testImage2 = img.imread(image_path2)
+
+# displaying the image
+plt.imshow(testImage2)
+# plt.imshow(image_path)
+plt.show()
+
+# Load the trained model
+# model = tf.keras.models.load_model('/content/drive/MyDrive/minar_project_dataset/train/stale_apple/Screen Shot 2018-06-07 at 2.15.50 PM.png')
+
+# Function to preprocess input image(s)
+def preprocess_image(image_path):
+    img = cv2.imread(image_path)
+    img = cv2.resize(img, (image_height, image_width))
+    img = img.astype('float32') / 255.0  # Normalize pixel values
+    img = np.expand_dims(img, axis=0)  # Add batch dimension
+    return img
+
+# Example usage: Get prediction for a single image
+# image_path = '/content/drive/MyDrive/Image/image3.jpg'
+
+image_path = '/content/apple_yolo_cut_picture/ultralytics_crop_0.jpg'
+# image_path = '/content/drive/MyDrive/minar_project_dataset/test/stale_apple/vertical_flip_Screen Shot 2018-06-08 at 2.29.33 PM.png'
+
+input_image = preprocess_image(image_path)
+predictions = model2.predict(input_image)
+
+# Interpret the predictions
+predicted_class = "fresh_apple" if predictions[0][0] > 0.5 else "stale_apple"  # Adjust based on your labels
+confidence = predictions[0][0] if predicted_class == "fresh_apple" else 1 - predictions[0][0]  # Confidence score
+print("Predicted class:", predicted_class)
+print("Confidence:", confidence)
+
+
+
+# reading the image
+testImage = img.imread(image_path)
+
+# displaying the image
+plt.imshow(testImage)
+# plt.imshow(image_path)
+plt.show()
+----------------------------------------------------------------------------------------------------------------------------
